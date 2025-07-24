@@ -43,6 +43,7 @@ export const App: React.FC = () => {
 
     if (!newTodo.trim()) {
       setErrorMessage('Title should not be empty');
+
       return;
     }
 
@@ -66,6 +67,7 @@ export const App: React.FC = () => {
     try {
       await deleteTodo(id);
       const updatedTodos = await getTodos();
+
       setTodos(updatedTodos);
     } catch (err) {
       setErrorMessage('Unable to delete a todo');
