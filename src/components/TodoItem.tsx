@@ -4,9 +4,10 @@ import { Todo } from '../types/Todo';
 type Props = {
   todo: Todo;
   onDelete: (id: number) => void;
+  isLoading?: boolean;
 };
 
-export const TodoItem: React.FC<Props> = ({ todo, onDelete }) => {
+export const TodoItem: React.FC<Props> = ({ todo, onDelete, isLoading }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
       <div
@@ -36,10 +37,12 @@ export const TodoItem: React.FC<Props> = ({ todo, onDelete }) => {
           ×
         </button>
 
-        <div data-cy="TodoLoader" className="modal overlay">
-          <div className="modal-background has-background-white-ter" />
-          <div className="loader" />
-        </div>
+        {isLoading && (
+          <div data-cy="TodoLoader" className="modal overlay is-active">
+            <div className="modal-background has-background-white-ter" />
+            <div className="loader" />
+          </div>
+        )}
       </div>
 
       {/* This is a completed todo */}

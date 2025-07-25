@@ -1,12 +1,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import { addNewTodo, deleteTodo, getTodos, USER_ID } from './api/todos';
 import { TodoHeader } from './components/TodoHeader';
 import { TodoList } from './components/TodoList';
 import { TodoFooter } from './components/TodoFooter';
 import { Todo } from './types/Todo';
+import { TodoItem } from './components/TodoItem';
 
 export const App: React.FC = () => {
   const [newTodo, setNewTodo] = useState('');
@@ -14,12 +15,22 @@ export const App: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
   const [errorMessage, setErrorMessage] = useState('');
 
+  const [tempTodo, setTempTodo] = useState<Todo | null>(null);
+
+  const [isAdding, setIsAdding] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     getTodos()
       .then(setTodos)
       .catch(() => {
         setErrorMessage('Unable to load todos');
       });
+  }, []);
+
+  useEffect(() => {
+    inputRef.current?.focus();
   }, []);
 
   if (!USER_ID) {
@@ -47,19 +58,36 @@ export const App: React.FC = () => {
       return;
     }
 
+    setIsAdding(true);
+
+    const temp = {
+      id: 0,
+      userId: USER_ID,
+      title: newTodo.trim(),
+      completed: false,
+    };
+
+    setTempTodo(temp);
+
     try {
-      await addNewTodo({
+      const createdTodo = await addNewTodo({
         userId: USER_ID,
         title: newTodo.trim(),
         completed: false,
       });
 
       setNewTodo('');
-      const updatedTodos = await getTodos();
 
-      setTodos(updatedTodos);
+      setTodos(prev => [...prev, createdTodo]);
+
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
     } catch (err) {
       setErrorMessage('Unable to add a todo');
+    } finally {
+      setIsAdding(false);
+      setTempTodo(null);
     }
   };
 
@@ -83,9 +111,15 @@ export const App: React.FC = () => {
           newTodo={newTodo}
           setNewTodo={setNewTodo}
           onSubmit={handleAddTodo}
+          isDisabled={isAdding}
+          inputRef={inputRef}
         />
 
         <TodoList todos={filteredTodos} onDelete={handleDeleteTodo} />
+
+        {tempTodo && (
+          <TodoItem onDelete={handleDeleteTodo} todo={tempTodo} isLoading />
+        )}
 
         {/* Hide the footer if there are no todos */}
         <TodoFooter todos={todos} filter={filter} setFilter={setFilter} />

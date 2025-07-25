@@ -4,12 +4,16 @@ type Props = {
   newTodo: string;
   setNewTodo: (value: string) => void;
   onSubmit: (event: React.FormEvent) => void;
+  isDisabled: boolean;
+  inputRef: React.RefObject<HTMLInputElement>;
 };
 
 export const TodoHeader: React.FC<Props> = ({
   newTodo,
   setNewTodo,
   onSubmit,
+  isDisabled,
+  inputRef,
 }) => {
   return (
     <header className="todoapp__header">
@@ -23,6 +27,8 @@ export const TodoHeader: React.FC<Props> = ({
       {/* Add a todo on form submit */}
       <form onSubmit={onSubmit}>
         <input
+          ref={inputRef}
+          disabled={isDisabled}
           data-cy="NewTodoField"
           type="text"
           className="todoapp__new-todo"
