@@ -12,7 +12,12 @@ type Props = {
 };
 /* eslint-enable @typescript-eslint/indent */
 
-export const TodoFooter: React.FC<Props> = ({ todos, filter, setFilter, handleClearCompleted }) => {
+export const TodoFooter: React.FC<Props> = ({
+  todos,
+  filter,
+  setFilter,
+  handleClearCompleted,
+}) => {
   const completedCount = todos?.filter(todo => todo.completed).length ?? 0;
   const activeCount = todos ? todos.length - completedCount : 0;
 
