@@ -15,7 +15,7 @@ export const TodoHeader: React.FC<Props> = ({
   onSubmit,
   isDisabled,
   inputRef,
-  setErrorMessage
+  setErrorMessage,
 }) => {
   return (
     <header className="todoapp__header">
