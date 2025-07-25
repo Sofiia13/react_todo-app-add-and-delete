@@ -40,6 +40,7 @@ export const TodoHeader: React.FC<Props> = ({
             setNewTodo(e.target.value);
             setErrorMessage('');
           }}
+          autoFocus
         />
       </form>
     </header>

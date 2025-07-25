@@ -8,10 +8,11 @@ type Props = {
   setFilter: React.Dispatch<
     React.SetStateAction<'all' | 'active' | 'completed'>
   >;
+  handleClearCompleted: () => void;
 };
 /* eslint-enable @typescript-eslint/indent */
 
-export const TodoFooter: React.FC<Props> = ({ todos, filter, setFilter }) => {
+export const TodoFooter: React.FC<Props> = ({ todos, filter, setFilter, handleClearCompleted }) => {
   const completedCount = todos?.filter(todo => todo.completed).length ?? 0;
   const activeCount = todos ? todos.length - completedCount : 0;
 
@@ -63,8 +64,10 @@ export const TodoFooter: React.FC<Props> = ({ todos, filter, setFilter }) => {
       {/* this button should be disabled if there are no completed todos */}
       <button
         type="button"
-        className="todoapp__clear-completed"
+        className={`todoapp__clear-completed ${todos.some(todo => todo.completed) ? '' : 'hidden'}`}
         data-cy="ClearCompletedButton"
+        onClick={handleClearCompleted}
+        disabled={!todos.some(todo => todo.completed)}
       >
         Clear completed
       </button>
