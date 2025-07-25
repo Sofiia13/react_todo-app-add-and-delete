@@ -33,6 +33,18 @@ export const App: React.FC = () => {
     inputRef.current?.focus();
   }, []);
 
+  useEffect(() => {
+    if (!errorMessage) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setErrorMessage('');
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [errorMessage]);
+
   if (!USER_ID) {
     return <UserWarning />;
   }
