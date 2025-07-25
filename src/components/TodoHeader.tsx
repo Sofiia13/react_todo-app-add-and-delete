@@ -6,6 +6,7 @@ type Props = {
   onSubmit: (event: React.FormEvent) => void;
   isDisabled: boolean;
   inputRef: React.RefObject<HTMLInputElement>;
+  setErrorMessage: (msg: string) => void;
 };
 
 export const TodoHeader: React.FC<Props> = ({
@@ -14,6 +15,7 @@ export const TodoHeader: React.FC<Props> = ({
   onSubmit,
   isDisabled,
   inputRef,
+  setErrorMessage
 }) => {
   return (
     <header className="todoapp__header">
@@ -34,7 +36,10 @@ export const TodoHeader: React.FC<Props> = ({
           className="todoapp__new-todo"
           placeholder="What needs to be done?"
           value={newTodo}
-          onChange={e => setNewTodo(e.target.value)}
+          onChange={e => {
+            setNewTodo(e.target.value);
+            setErrorMessage('');
+          }}
         />
       </form>
     </header>

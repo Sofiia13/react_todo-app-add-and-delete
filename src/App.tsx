@@ -113,6 +113,7 @@ export const App: React.FC = () => {
           onSubmit={handleAddTodo}
           isDisabled={isAdding}
           inputRef={inputRef}
+          setErrorMessage={setErrorMessage}
         />
 
         <TodoList todos={filteredTodos} onDelete={handleDeleteTodo} />
