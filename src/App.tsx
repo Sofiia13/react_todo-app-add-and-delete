@@ -7,11 +7,13 @@ import { TodoList } from './components/TodoList';
 import { TodoFooter } from './components/TodoFooter';
 import { Todo } from './types/Todo';
 import { TodoItem } from './components/TodoItem';
+import { ErrorMessage } from './components/ErrorMessage';
+import { Filter } from './utils/Filter';
 
 export const App: React.FC = () => {
   const [newTodo, setNewTodo] = useState('');
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+  const [filter, setFilter] = useState<Filter>(Filter.All);
   const [errorMessage, setErrorMessage] = useState('');
   const [loadingTodoId, setLoadingTodoId] = useState<number | null>(null);
 
@@ -51,12 +53,12 @@ export const App: React.FC = () => {
     }
   }, [errorMessage]);
 
-  const filteredTodos = todos?.filter(todo => {
-    if (filter === 'active') {
+  const filteredTodos = todos.filter(todo => {
+    if (filter === Filter.Active) {
       return !todo.completed;
     }
 
-    if (filter === 'completed') {
+    if (filter === Filter.Completed) {
       return todo.completed;
     }
 
@@ -180,21 +182,10 @@ export const App: React.FC = () => {
 
       {/* DON'T use conditional rendering to hide the notification */}
       {/* Add the 'hidden' class to hide the message smoothly */}
-      <div
-        data-cy="ErrorNotification"
-        className={`
-    notification is-danger is-light has-text-weight-normal
-    ${!errorMessage ? 'hidden' : ''}
-  `}
-      >
-        <button
-          data-cy="HideErrorButton"
-          type="button"
-          className="delete"
-          onClick={() => setErrorMessage('')}
-        />
-        {errorMessage}
-      </div>
+      <ErrorMessage
+        errorMessage={errorMessage}
+        setErrorMessage={setErrorMessage}
+      />
     </div>
   );
 };
