@@ -123,13 +123,23 @@ export const App: React.FC = () => {
   const handleClearCompleted = async () => {
     const completedTodos = todos.filter(todo => todo.completed);
 
-    try {
-      await Promise.all(completedTodos.map(todo => deleteTodo(todo.id)));
-      const updatedTodos = await getTodos();
+    const results = await Promise.allSettled(
+      completedTodos.map(todo => deleteTodo(todo.id).then(() => todo.id)),
+    );
 
-      setTodos(updatedTodos);
-    } catch {
-      setErrorMessage('Unable to clear completed todos');
+    const successfullyDeletedIds = results
+      .filter(r => r.status === 'fulfilled')
+      .map(r => (r as PromiseFulfilledResult<number>).value);
+
+    const failedDeletions = results.some(r => r.status === 'rejected');
+
+    setTodos(prev =>
+      prev.filter(todo => !successfullyDeletedIds.includes(todo.id)),
+    );
+    inputRef.current?.focus();
+
+    if (failedDeletions) {
+      setErrorMessage('Unable to delete a todo');
     }
   };
 
